@@ -1,4 +1,5 @@
 .cache
 .vscode
+.clang-format
 build
-Makefile
+thirdparty
