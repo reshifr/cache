@@ -10,7 +10,6 @@
 #include "crypt/rand.h"
 #include "cryptopp/chachapoly.h"
 
-
 namespace mind {
 
 class chacha20poly1305_conf {
@@ -23,17 +22,15 @@ public:
 };
 
 template <
-  class H=hash<
-    chacha20poly1305_conf::KEY_LENGTH,
-    sblk<chacha20poly1305_conf::SALT_LENGTH>>,
-  template<u L> class Rd=rand>
+  template <u L> class Rd=rand,
+  template <u L, class Slt> class H=hash>
 class chacha20poly1305 : public chacha20poly1305_conf {
 public:
   chacha20poly1305(const sblk<SALT_LENGTH>& salt): m_salt(salt) {};
   dblk enc(const str& secret, const str& message) {
-    H keyg(m_salt);
     Rd<IV_LENGTH> ivg;
     Rd<ADD_LENGTH> addg;
+    H<KEY_LENGTH, sblk<SALT_LENGTH>> keyg(m_salt);
     CryptoPP::ChaCha20Poly1305::Encryption en;
 
     sblk<IV_LENGTH> iv = ivg();
@@ -48,7 +45,7 @@ public:
       iv.data(), IV_LENGTH, add.data(), ADD_LENGTH,
       reinterpret_cast<const b*>(message.data()), message.size());
 
-    dblk mcipher = serialize(mac, iv, add, cipher);
+    dblk mcipher = serialize(cipher, iv, add, mac);
     return mcipher;
   }
 
@@ -86,14 +83,14 @@ private:
     const sblk<ADD_LENGTH>& add,
     const sblk<MAC_LENGTH>& mac
   ) {
-    dynamic_block block;
-    std::copy_n(std::begin(mac), MAC_LENGTH, std::back_inserter(block));
-    std::copy_n(std::begin(iv), IV_LENGTH, std::back_inserter(block));
-    std::copy_n(std::begin(add), ADD_LENGTH, std::back_inserter(block));
-    std::copy_n(std::begin(ciphertext), std::size(ciphertext),
-                std::back_inserter(block));
+    dblk mcipher;
+    // std::copy_n(std::begin(mac), MAC_LENGTH, std::back_inserter(block));
+    // std::copy_n(std::begin(iv), IV_LENGTH, std::back_inserter(block));
+    // std::copy_n(std::begin(add), ADD_LENGTH, std::back_inserter(block));
+    // std::copy_n(std::begin(ciphertext), std::size(ciphertext),
+    //             std::back_inserter(block));
 
-    return block;
+    return mcipher;
   }
 
 //   void deserialize(static_block<MAC_LENGTH> &mac, static_block<IV_LENGTH> &iv,

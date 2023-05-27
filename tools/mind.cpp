@@ -9,7 +9,7 @@ int main(void) {
   mind::sblk<16> salt = rand();
   mind::hash<32, mind::sblk<16>> hg(salt);
   
-  // mind::chacha20poly1305 cg;
+  mind::chacha20poly1305<mind::rand, mind::hash> cg(salt);
 
 
 

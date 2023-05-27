@@ -7,7 +7,7 @@
 namespace mind {
 
 template <u L>
-class osrand {
+class rdrand {
   static_assert(L>0, "Length must be greater than 0.");
 public:
   sblk<L> operator()(void) {
