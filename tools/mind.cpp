@@ -16,7 +16,7 @@ int main(void) {
   mind::rand<16> rand;
   mind::sblk<16> salt = rand();
   mind::hash<32, mind::sblk<16>> hg(salt);
-  mind::sblk<32> hashval = hg("halo", salt);
+  mind::sblk<32> hashval = hg("halo");
 
   
   // mind::chacha20poly1305<mind::rand, mind::hash> cg(salt);

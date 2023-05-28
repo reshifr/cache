@@ -27,12 +27,12 @@ public:
     return *this;
   }
 
-  sblk<L> operator()(const str& data, const Slt& salt) noexcept {
+  sblk<L> operator()(const str& data) noexcept {
     CryptoPP::SecByteBlock dk(L);
     CryptoPP::Scrypt hg;
     hg.DeriveKey(dk, L,
       reinterpret_cast<const b*>(data.c_str()),
-      data.length(), salt.data(), salt.size(), N, R, P);
+      data.length(), m_salt.data(), m_salt.size(), N, R, P);
     sblk<L> hv;
     std::copy_n(dk.begin(), L, hv.begin());
     return hv;
