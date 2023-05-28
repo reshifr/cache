@@ -1,20 +1,22 @@
 #ifndef MIND_CRYPT_RAND_H
 #define MIND_CRYPT_RAND_H 1
 
+#include <concepts>
+
 #include "types.h"
 #include "crypt/osrand.h"
 
 namespace mind {
 
-template <u L, class Rd=osrand<L>>
-class rand {
-  static_assert(L>0, "Length must be greater than 0.");
-public:
-  sblk<L> operator()(void) {
-    Rd rng;
-    return rng();
-  }
+template <u L, class Rd>
+concept rand_concept = requires(Rd rand) {
+  requires L>0;
+  { rand.operator()() } noexcept -> std::same_as<sblk<L>>;
 };
+
+template <u L, class Rd=osrand<L>>
+requires rand_concept<L, Rd>
+using rand = Rd;
 
 } // namespace mind
 

@@ -8,9 +8,8 @@ namespace mind {
 
 template <u L>
 class osrand {
-  static_assert(L>0, "Length must be greater than 0.");
 public:
-  sblk<L> operator()(void) {
+  sblk<L> operator()(void) const noexcept {
     sblk<L> rn;
     CryptoPP::AutoSeededRandomPool rng;
     rng.GenerateBlock(rn.data(), L);

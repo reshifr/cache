@@ -1,3 +1,4 @@
+#include <utility>
 #ifndef MIND_CRYPT_SCRYPT_H
 #define MIND_CRYPT_SCRYPT_H 1
 
@@ -19,9 +20,14 @@ public:
 
 template <u L, class Slt>
 class scrypt : public scrypt_conf {
-  static_assert(L>0, "Length must be greater than 0.");
 public:
-  sblk<L> operator()(const str& data, const Slt& salt) {
+  scrypt(const Slt& salt) noexcept: m_salt(salt) {}
+  scrypt& operator()(const Slt& salt) noexcept {
+    m_salt = salt;
+    return *this;
+  }
+
+  sblk<L> operator()(const str& data, const Slt& salt) noexcept {
     CryptoPP::SecByteBlock dk(L);
     CryptoPP::Scrypt hg;
     hg.DeriveKey(dk, L,
@@ -31,6 +37,9 @@ public:
     std::copy_n(dk.begin(), L, hv.begin());
     return hv;
   }
+
+private:
+  Slt m_salt;
 };
 
 } // namespace mind

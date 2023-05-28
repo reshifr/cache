@@ -6,24 +6,20 @@
 
 namespace mind {
 
-template <u L, class Slt, class H=scrypt<L, Slt>>
-class hash {
-  static_assert(L>0, "Length must be greater than 0.");
-public:
-  hash(const Slt& salt): m_salt(salt) {};
-  hash& operator()(const Slt& salt) {
-    m_salt = salt;
-    return *this;
-  }
-
-  sblk<L> operator()(const str& data) {
-    H hg;
-    return hg(data, m_salt);
-  }
-
-private:
-  Slt m_salt;
+template <u L, class Slt, class H>
+concept hash_concept = requires(H h) {
+  requires requires(const Slt& salt) {
+    { h(salt) } noexcept;
+    { h(salt) } noexcept -> std::same_as<H&>;
+  };
+  requires requires(const str& data, const Slt& salt) {
+    { h.operator()(data, salt) } noexcept -> std::same_as<sblk<L>>;
+  };
 };
+
+template <u L, class Slt, class H=scrypt<L, Slt>>
+requires hash_concept<L, Slt, H>
+using hash = H;
 
 } // namespace mind
 

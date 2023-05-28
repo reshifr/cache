@@ -2,14 +2,28 @@
 #include "crypt/hash.h"
 #include "crypt/rand.h"
 
-#include "crypt/chacha20poly1305.h"
+
+#include "crypt/osrand.h"
+#include "crypt/rdrand.h"
+
+
+#include <iostream>
+using namespace std;
+
+// #include "crypt/chacha20poly1305.h"
 
 int main(void) {
   mind::rand<16> rand;
   mind::sblk<16> salt = rand();
   mind::hash<32, mind::sblk<16>> hg(salt);
+  mind::sblk<32> hashval = hg("halo", salt);
+
   
-  mind::chacha20poly1305<mind::rand, mind::hash> cg(salt);
+  // mind::chacha20poly1305<mind::rand, mind::hash> cg(salt);
+
+  for(auto elm : hashval)
+    printf("%02x", elm);
+  cout<<endl;
 
 
 

@@ -6,8 +6,8 @@
 #include <algorithm>
 
 #include "types.h"
-#include "crypt/hash.h"
 #include "crypt/rand.h"
+#include "crypt/scrypt.h"
 #include "cryptopp/chachapoly.h"
 
 namespace mind {
@@ -22,8 +22,8 @@ public:
 };
 
 template <
-  template <u L> class Rd=rand,
-  template <u L, class Slt> class H=hash>
+  class H=scrypt,
+  template <u L> class Rd=rand>
 class chacha20poly1305 : public chacha20poly1305_conf {
 public:
   chacha20poly1305(const sblk<SALT_LENGTH>& salt): m_salt(salt) {};
