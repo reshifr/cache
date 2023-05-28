@@ -10,7 +10,11 @@
 #include <iostream>
 using namespace std;
 
-// #include "crypt/chacha20poly1305.h"
+#include "crypt/chacha20poly1305.h"
+#include "crypt/scrypt.h"
+
+template <mind::u L, class Slt>
+using fdk = mind::hash<L, Slt, mind::scrypt<L, Slt>>;
 
 int main(void) {
   mind::rand<16> rand;
@@ -18,45 +22,15 @@ int main(void) {
   mind::hash<32, mind::sblk<16>> hg(salt);
   mind::sblk<32> hashval = hg("halo");
 
-  
-  // mind::chacha20poly1305<mind::rand, mind::hash> cg(salt);
+  mind::chacha20poly1305<fdk> cg(salt);
+  auto enmsg = cg.enc("pwd", "INI RAHASIA 😀");
 
-  for(auto elm : hashval)
-    printf("%02x", elm);
-  cout<<endl;
+  // for(auto c : enmsg)
+  //   printf("%02x", c);
+  // cout<<endl;
 
-
-
-
-
-
-
-  
-  // // csprand<256> rand;
-  // // auto salt = rand();
-  // // hash<128, decltype(salt)> h(salt);
-
-  // // auto m = h("halo");
-  // // for (auto elm : m) {
-  // //   printf("%02x", elm);
-  // // }
-
-  // // std::cout << std::endl;
-
-  // csprand<64> rand;
-  // auto salt = rand();
-  // cipher<decltype(salt)> ciphergen(salt);
-
-  // auto en = ciphergen.encrypt("pwd", "INI RAHASIA 😀");
-  // for( auto elm : en ) {
-  //   printf("%02x", elm);
-  // }
-
-  // auto de = ciphergen.decrypt("pwd", en);
-
-  // std::cout<< std::endl << "Message = " << de << std::endl;
-
-  // std::cout << " = " << std::size(m) << std::endl;
+  auto demsg = cg.dec("pwd", enmsg);
+  cout<<"Message = " <<demsg<<endl;
 
   return 0;
 }

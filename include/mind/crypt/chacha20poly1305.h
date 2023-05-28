@@ -1,13 +1,11 @@
 #ifndef MIND_CRYPT_CHACHA20POLY1305_H
 #define MIND_CRYPT_CHACHA20POLY1305_H 1
 
-#include <string>
-#include <iterator>
 #include <algorithm>
 
 #include "types.h"
+#include "crypt/hash.h"
 #include "crypt/rand.h"
-#include "crypt/scrypt.h"
 #include "cryptopp/chachapoly.h"
 
 namespace mind {
@@ -22,12 +20,12 @@ public:
 };
 
 template <
-  class H=scrypt,
+  template <u L, class Slt> class H,
   template <u L> class Rd=rand>
 class chacha20poly1305 : public chacha20poly1305_conf {
 public:
   chacha20poly1305(const sblk<SALT_LENGTH>& salt): m_salt(salt) {};
-  dblk enc(const str& secret, const str& message) {
+  dblk enc(const str& sec, const str& msg) {
     Rd<IV_LENGTH> ivg;
     Rd<ADD_LENGTH> addg;
     H<KEY_LENGTH, sblk<SALT_LENGTH>> keyg(m_salt);
@@ -35,79 +33,71 @@ public:
 
     sblk<IV_LENGTH> iv = ivg();
     sblk<ADD_LENGTH> add = addg();
-    sblk<KEY_LENGTH> key = keyg(secret);
+    sblk<KEY_LENGTH> key = keyg(sec);
     sblk<MAC_LENGTH> mac;
-    dblk cipher(message.size());
+    dblk enmsg(msg.size());
 
     en.SetKeyWithIV(key.data(), KEY_LENGTH, iv.data(), IV_LENGTH);
     en.EncryptAndAuthenticate(
-      cipher.data(), mac.data(), MAC_LENGTH,
+      enmsg.data(), mac.data(), MAC_LENGTH,
       iv.data(), IV_LENGTH, add.data(), ADD_LENGTH,
-      reinterpret_cast<const b*>(message.data()), message.size());
-
-    dblk mcipher = serialize(cipher, iv, add, mac);
-    return mcipher;
+      reinterpret_cast<const b*>(msg.data()), msg.size());
+    dblk cipblk = serialize(enmsg, iv, add, mac);
+    return cipblk;
   }
 
-//   std::string decrypt(const std::string &secret,
-//                       const dynamic_block &cipherblock) {
-//     hash<KEY_LENGTH, Salt> keygen(m_salt);
-//     CryptoPP::ChaCha20Poly1305::Decryption dec;
+  str dec(const str& sec, const dblk &cipblk) {
+    H<KEY_LENGTH, sblk<SALT_LENGTH>> keyg(m_salt);
+    CryptoPP::ChaCha20Poly1305::Decryption de;
 
-//     static_block<IV_LENGTH> iv;
-//     static_block<ADD_LENGTH> add;
-//     static_block<KEY_LENGTH> key = keygen(secret);
-//     static_block<MAC_LENGTH> mac;
+    sblk<IV_LENGTH> iv;
+    sblk<ADD_LENGTH> add;
+    sblk<MAC_LENGTH> mac;
+    sblk<KEY_LENGTH> key = keyg(sec);
+    deserialize(cipblk, iv, add, mac);
+    constexpr auto metalen = IV_LENGTH+ADD_LENGTH+MAC_LENGTH;
+    auto enmsglen = cipblk.size()-metalen;
+    dblk demsg(enmsglen);
 
-//     auto ciphertext_length =
-//         std::size(cipherblock) - MAC_LENGTH - IV_LENGTH - ADD_LENGTH;
-//     dynamic_block ciphertext(ciphertext_length);
-//     deserialize(mac, iv, add, ciphertext, cipherblock);
-
-//     dec.SetKeyWithIV(std::data(key), KEY_LENGTH, std::data(iv), IV_LENGTH);
-//     dec.DecryptAndVerify(std::data(ciphertext), std::data(mac), MAC_LENGTH,
-//                          std::data(iv), IV_LENGTH, std::data(add), ADD_LENGTH,
-//                          reinterpret_cast<const byte *>(std::data(ciphertext)),
-//                          ciphertext_length);
-
-//     std::string message(std::begin(ciphertext), std::end(ciphertext));
-//     return message;
-//   }
+    de.SetKeyWithIV(key.data(), KEY_LENGTH, iv.data(), IV_LENGTH);
+    de.DecryptAndVerify(
+      demsg.data(), mac.data(), MAC_LENGTH, iv.data(),
+      IV_LENGTH, add.data(), ADD_LENGTH, cipblk.data()+metalen, enmsglen);
+    str msg(demsg.begin(), demsg.end());
+    return msg;
+  }
 
 private:
   sblk<SALT_LENGTH> m_salt;
 
   dblk serialize(
-    const dblk& cipher,
+    dblk& enmsg,
     const sblk<IV_LENGTH>& iv,
     const sblk<ADD_LENGTH>& add,
     const sblk<MAC_LENGTH>& mac
   ) {
-    dblk mcipher;
-    // std::copy_n(std::begin(mac), MAC_LENGTH, std::back_inserter(block));
-    // std::copy_n(std::begin(iv), IV_LENGTH, std::back_inserter(block));
-    // std::copy_n(std::begin(add), ADD_LENGTH, std::back_inserter(block));
-    // std::copy_n(std::begin(ciphertext), std::size(ciphertext),
-    //             std::back_inserter(block));
-
-    return mcipher;
+    dblk cipblk;
+    cipblk.insert(cipblk.end(), iv.begin(), iv.end());
+    cipblk.insert(cipblk.end(), add.begin(), add.end());
+    cipblk.insert(cipblk.end(), mac.begin(), mac.end());
+    cipblk.insert(cipblk.end(), enmsg.begin(), enmsg.end());
+    return cipblk;
   }
 
-//   void deserialize(static_block<MAC_LENGTH> &mac, static_block<IV_LENGTH> &iv,
-//                    static_block<ADD_LENGTH> &add, dynamic_block &ciphertext,
-//                    const dynamic_block &cipherblock) {
-//     auto mac_begin = std::begin(cipherblock);
-//     std::copy_n(mac_begin, MAC_LENGTH, std::begin(mac));
-//     auto iv_begin = std::begin(cipherblock) + MAC_LENGTH;
-//     std::copy_n(iv_begin, IV_LENGTH, std::begin(iv));
-//     auto add_begin = iv_begin + IV_LENGTH;
-//     std::copy_n(add_begin, ADD_LENGTH, std::begin(add));
-//     auto ciphertext_begin = add_begin + ADD_LENGTH;
-//     std::copy_n(ciphertext_begin, std::size(ciphertext),
-//                 std::begin(ciphertext));
-//   }
+  void deserialize(
+    const dblk& cipblk,
+    sblk<IV_LENGTH>& iv,
+    sblk<ADD_LENGTH>& add,
+    sblk<MAC_LENGTH>& mac
+  ) {
+    auto ivi = cipblk.begin();
+    std::copy_n(ivi, IV_LENGTH, iv.begin());    
+    auto addi = ivi+IV_LENGTH;
+    std::copy_n(addi, ADD_LENGTH, add.begin());
+    auto maci = addi+ADD_LENGTH;
+    std::copy_n(maci, MAC_LENGTH, mac.begin());
+  }
 };
-
 
 } // namespace mind
 
