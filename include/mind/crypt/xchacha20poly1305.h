@@ -1,5 +1,5 @@
-#ifndef MIND_CRYPT_CHACHA20POLY1305_H
-#define MIND_CRYPT_CHACHA20POLY1305_H 1
+#ifndef MIND_CRYPT_XCHACHA20POLY1305_H
+#define MIND_CRYPT_XCHACHA20POLY1305_H 1
 
 #include <algorithm>
 
@@ -9,9 +9,9 @@
 
 namespace mind {
 
-class chacha20poly1305_conf {
+class xchacha20poly1305_conf {
 public:
-  static constexpr auto IV_LENGTH = 12;
+  static constexpr auto IV_LENGTH = 24;
   static constexpr auto ADD_LENGTH = 12;
   static constexpr auto KEY_LENGTH = 32;
   static constexpr auto MAC_LENGTH = 16;
@@ -21,14 +21,14 @@ public:
 template <
   template <u L, class Slt> class H,
   template <u L> class Rd=rand>
-class chacha20poly1305 : public chacha20poly1305_conf {
+class xchacha20poly1305 : public xchacha20poly1305_conf {
 public:
-  chacha20poly1305(const sblk<SALT_LENGTH>& salt): m_salt(salt) {};
+  xchacha20poly1305(const sblk<SALT_LENGTH>& salt): m_salt(salt) {};
   dblk enc(const str& sec, const str& msg) {
     Rd<IV_LENGTH> ivg;
     Rd<ADD_LENGTH> addg;
     H<KEY_LENGTH, sblk<SALT_LENGTH>> keyg(m_salt);
-    CryptoPP::ChaCha20Poly1305::Encryption en;
+    CryptoPP::XChaCha20Poly1305::Encryption en;
 
     sblk<IV_LENGTH> iv = ivg();
     sblk<ADD_LENGTH> add = addg();
@@ -47,7 +47,7 @@ public:
 
   str dec(const str& sec, const dblk &cipblk) {
     H<KEY_LENGTH, sblk<SALT_LENGTH>> keyg(m_salt);
-    CryptoPP::ChaCha20Poly1305::Decryption de;
+    CryptoPP::XChaCha20Poly1305::Decryption de;
 
     sblk<IV_LENGTH> iv;
     sblk<ADD_LENGTH> add;
@@ -100,4 +100,4 @@ private:
 
 } // namespace mind
 
-#endif // MIND_CRYPT_CHACHA20POLY1305_H
+#endif // MIND_CRYPT_XCHACHA20POLY1305_H
