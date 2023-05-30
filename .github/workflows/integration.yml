@@ -25,7 +25,7 @@ jobs:
           make -C build
       - name: Testing
         run: |
-          build/mind
+          build/tests/test_mind
       - name: Running
         run: |
-          build/tests/test_mind
+          build/mind
