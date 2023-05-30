@@ -73,7 +73,7 @@ target_include_directories(
 	${MIND}
 	PUBLIC
 	${MIND_INCLUDE_DIR}
-	INTERFACE
+	PRIVATE
 	${cryptopp_INCLUDE_DIR}
 )
 

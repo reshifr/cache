@@ -12,9 +12,8 @@ target_include_directories(
 	${MIND_TEST}
 	PUBLIC
 	${MIND_INCLUDE_DIR}
-	INTERFACE
-	${cryptopp_INCLUDE_DIR}
 	PRIVATE
+	${cryptopp_INCLUDE_DIR}
 	${googletest_INCLUDE_DIR}
 	${googlemock_INCLUDE_DIR}
 )
