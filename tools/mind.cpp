@@ -1,14 +1,14 @@
 #include <iostream>
 
-#include "types.h"
-#include "crypt/hash.h"
-#include "crypt/rand.h"
-#include "crypt/osrand.h"
-#include "crypt/rdrand.h"
-#include "crypt/scrypt.h"
-#include "crypt/cipher.h"
-#include "crypt/chacha20poly1305.h"
-#include "crypt/xchacha20poly1305.h"
+#include "mind/types.h"
+#include "mind/crypt/hash.h"
+#include "mind/crypt/rand.h"
+#include "mind/crypt/osrand.h"
+#include "mind/crypt/rdrand.h"
+#include "mind/crypt/scrypt.h"
+#include "mind/crypt/cipher.h"
+#include "mind/crypt/chacha20poly1305.h"
+#include "mind/crypt/xchacha20poly1305.h"
 
 using namespace std;
 

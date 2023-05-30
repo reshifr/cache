@@ -1,11 +1,19 @@
-#include "types.h"
 #include "gtest/gtest.h"
-#include "cryptopp/rdrand.h"
+#include "mind/crypt/rdrand.h"
 
-// Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
-  // Expect two strings not to be equal.
-  EXPECT_STRNE("hello", "world");
-  // Expect equality.
-  EXPECT_EQ(7 * 6, 42);
+TEST(test_rdrand, rdrand) {
+  // Inputs
+  constexpr mind::u size = 16;
+
+  // Expectations
+  constexpr mind::u exp_size = size;
+  mind::sblk<size> exp_rn = mind::sblk<size>();
+
+  // Providing inputs
+  mind::rdrand<size> rng;
+  auto rn = rng();
+
+  // Checking outputs
+  EXPECT_EQ(exp_size, rn.size());
+  EXPECT_NE(exp_rn, rn);
 }
