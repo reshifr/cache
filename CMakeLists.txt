@@ -5,9 +5,16 @@ project(Mind)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS_DEBUG -Og)
 set(CMAKE_CXX_FLAGS_RELEASE -O3)
+cmake_host_system_information(
+	RESULT MAX_THREADS
+	QUERY NUMBER_OF_LOGICAL_CORES
+)
 
-cmake_host_system_information(RESULT MAX_THREADS QUERY NUMBER_OF_LOGICAL_CORES)
-math(EXPR NPROCS "${MAX_THREADS} - 2")
+if(MAX_THREADS EQUAL 1)
+	set(NPROCS 1)
+else()
+	math(EXPR NPROCS "${MAX_THREADS} - 1")
+endif()
 
 # Mind Configuration
 set(MIND mind)

@@ -1,5 +1,4 @@
 # Mind
-
 name: integration
 
 on:
@@ -19,7 +18,7 @@ jobs:
         shell: sh
         working-directory: .
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Building
         run: |
           cmake -S . -B build
