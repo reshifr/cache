@@ -1,7 +1,7 @@
 #ifndef MIND_CRYPT_OSRAND_H
 #define MIND_CRYPT_OSRAND_H 1
 
-#include "types.h"
+#include "mind/types.h"
 #include "cryptopp/osrng.h"
 
 namespace mind {

@@ -1,9 +1,9 @@
 #ifndef CRYPT_CIPHER_H
 #define CRYPT_CIPHER_H 1
 
-#include "types.h"
-#include "crypt/rand.h"
-#include "crypt/xchacha20poly1305.h"
+#include "mind/types.h"
+#include "mind/crypt/rand.h"
+#include "mind/crypt/xchacha20poly1305.h"
 
 namespace mind {
 

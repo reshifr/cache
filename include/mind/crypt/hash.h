@@ -1,8 +1,8 @@
 #ifndef MIND_CRYPT_HASH_H
 #define MIND_CRYPT_HASH_H 1
 
-#include "types.h"
-#include "crypt/scrypt.h"
+#include "mind/types.h"
+#include "mind/crypt/scrypt.h"
 
 namespace mind {
 

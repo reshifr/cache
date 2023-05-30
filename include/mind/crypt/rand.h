@@ -3,8 +3,8 @@
 
 #include <concepts>
 
-#include "types.h"
-#include "crypt/osrand.h"
+#include "mind/types.h"
+#include "mind/crypt/osrand.h"
 
 namespace mind {
 

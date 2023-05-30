@@ -9,8 +9,9 @@ set(CMAKE_CXX_FLAGS_RELEASE -O3)
 # Mind Configuration
 set(MIND mind)
 set(MIND_TEST test_mind)
-set(MIND_TEST_DIR ${CMAKE_SOURCE_DIR}/tests)
 set(MIND_CLI ${CMAKE_SOURCE_DIR}/tools/mind.cpp)
+set(MIND_TEST_DIR ${CMAKE_SOURCE_DIR}/tests)
+set(MIND_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 
 # Mind CLI
 add_executable(${MIND} ${MIND_CLI})
@@ -60,11 +61,10 @@ ExternalProject_Add(
 # Mind Add Include Directories
 target_include_directories(
 	${MIND}
-	PUBLIC include/mind
+	PUBLIC
+	${MIND_INCLUDE_DIR}
 	INTERFACE
 	${cryptopp_INCLUDE_DIR}
-	${googletest_INCLUDE_DIR}
-	${googlemock_INCLUDE_DIR}
 )
 
 # Mind Add Link Libraries
@@ -72,10 +72,6 @@ target_link_libraries(
 	${MIND}
 	PRIVATE
 	${cryptopp_LIB_DIR}/libcryptopp.a
-	${googletest_LIB_DIR}/libgtest.a
-	${googletest_LIB_DIR}/libgmock.a
-	${googletest_LIB_DIR}/libgtest_main.a
-	${googletest_LIB_DIR}/libgmock_main.a
 )
 
 # Mind Testing

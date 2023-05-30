@@ -10,9 +10,11 @@ add_executable(
 # Mind Test Add Include Directories
 target_include_directories(
 	${MIND_TEST}
-	PUBLIC include/mind
+	PUBLIC
+	${MIND_INCLUDE_DIR}
 	INTERFACE
 	${cryptopp_INCLUDE_DIR}
+	PRIVATE
 	${googletest_INCLUDE_DIR}
 	${googlemock_INCLUDE_DIR}
 )

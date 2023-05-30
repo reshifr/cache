@@ -1,7 +1,7 @@
 #ifndef MIND_CRYPT_RDRAND_H
 #define MIND_CRYPT_RDRAND_H 1
 
-#include "types.h"
+#include "mind/types.h"
 #include "cryptopp/rdrand.h"
 
 namespace mind {

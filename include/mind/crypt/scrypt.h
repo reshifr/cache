@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-#include "types.h"
+#include "mind/types.h"
 #include "cryptopp/scrypt.h"
 #include "cryptopp/secblock.h"
 #include "cryptopp/cryptlib.h"

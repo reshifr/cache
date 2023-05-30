@@ -3,8 +3,8 @@
 
 #include <algorithm>
 
-#include "types.h"
-#include "crypt/rand.h"
+#include "mind/types.h"
+#include "mind/crypt/rand.h"
 #include "cryptopp/chachapoly.h"
 
 namespace mind {
