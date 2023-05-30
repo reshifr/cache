@@ -6,15 +6,15 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS_DEBUG -Og)
 set(CMAKE_CXX_FLAGS_RELEASE -O3)
 
+cmake_host_system_information(RESULT MAX_THREADS QUERY NUMBER_OF_LOGICAL_CORES)
+math(EXPR NPROCS "${MAX_THREADS} - 2")
+
 # Mind Configuration
 set(MIND mind)
 set(MIND_TEST test_mind)
 set(MIND_CLI ${CMAKE_SOURCE_DIR}/tools/mind.cpp)
 set(MIND_TEST_DIR ${CMAKE_SOURCE_DIR}/tests)
 set(MIND_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
-
-# Mind CLI
-add_executable(${MIND} ${MIND_CLI})
 
 # Mind Dependencies
 include(ExternalProject)
@@ -32,7 +32,7 @@ ExternalProject_Add(
 	URL "https://github.com/weidai11/cryptopp/archive/refs/tags/CRYPTOPP_8_7_0.zip"
 	URL_HASH "SHA256=6055ab314ff4daae9490ddfb3fbcf107bc94a556401ed42f756fa5f7cd8c6510"
 	CONFIGURE_COMMAND ""
-	BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -C ${cryptopp_SOURCE_DIR}
+	BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -C ${cryptopp_SOURCE_DIR} -j${NPROCS}
 	BUILD_IN_SOURCE 1
 	BUILD_ALWAYS 0
 	INSTALL_COMMAND ""
@@ -52,11 +52,14 @@ ExternalProject_Add(
 	URL "https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip"
 	URL_HASH "SHA256=ffa17fbc5953900994e2deec164bb8949879ea09b411e07f215bfbb1f87f4632"
 	CONFIGURE_COMMAND ${CMAKE_COMMAND} ${googletest_SOURCE_DIR}
-	BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -C ${googletest_SOURCE_DIR}
+	BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -C ${googletest_SOURCE_DIR} -j${NPROCS}
 	BUILD_IN_SOURCE 1
 	BUILD_ALWAYS 0
 	INSTALL_COMMAND ""
 )
+
+# Mind CLI
+add_executable(${MIND} ${MIND_CLI})
 
 # Mind Add Include Directories
 target_include_directories(

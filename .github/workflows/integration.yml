@@ -1,0 +1,32 @@
+# Mind
+
+name: integration
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: sh
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v2
+      - name: Building
+        run: |
+          cmake -S . -B build
+          make -C build
+      - name: Testing
+        run: |
+          build/mind
+      - name: Running
+        run: |
+          build/tests/test_mind
