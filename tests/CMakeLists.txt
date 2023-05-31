@@ -2,10 +2,8 @@ cmake_minimum_required(VERSION 3.24.2)
 project(Mind)
 
 # Mind CLI
-add_executable(
-	${MIND_TEST}
-	${CMAKE_CURRENT_SOURCE_DIR}/crypt/test_rdrand.cpp
-)
+file(GLOB_RECURSE TEST_SOURCES ${MIND_TEST_DIR}/*.cpp)
+add_executable(${MIND_TEST} ${TEST_SOURCES})
 
 # Mind Test Add Include Directories
 target_include_directories(
