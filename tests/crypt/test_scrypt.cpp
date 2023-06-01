@@ -5,6 +5,7 @@ TEST(test_scrypt, scrypt) {
   // Inputs
   constexpr mind::u size = 16;
   mind::str data = "The Fox and the Grapes";
+  auto datav = mind::dblk(data.begin(), data.end());
   constexpr mind::sblk<size> salt = {
     0xe3, 0xe8, 0x62, 0xe5, 0x77, 0xbc, 0xc1, 0x28,
     0x7a, 0xae, 0x01, 0xbb, 0x6d, 0x40, 0xdc, 0x2f
@@ -19,7 +20,7 @@ TEST(test_scrypt, scrypt) {
 
   // Providing inputs
   mind::scrypt<size, decltype(salt)> h(salt);
-  auto hv = h(data);
+  auto hv = h(datav);
 
   // Checking outputs
   EXPECT_EQ(exp_size, hv.size());

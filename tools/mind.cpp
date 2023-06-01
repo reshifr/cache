@@ -19,17 +19,30 @@ int main(void) {
   mind::rand<16> rand;
   mind::sblk<16> salt = rand();
   mind::hash<32, mind::sblk<16>> hg(salt);
-  mind::sblk<32> hashval = hg("halo");
 
+  mind::str msg = "🤪🤪🤪";
+  mind::str password = "password";
+  auto msgv = mind::dblk(msg.begin(), msg.end());
+  auto passwordv = mind::dblk(password.begin(), password.end());
+
+  mind::sblk<32> hashval = hg(msgv);
   mind::cipher<fdk, mind::rdrand> cg(salt);
-  auto enmsg = cg.enc("password", "🤪🤪🤪");
 
-  for(auto ch : enmsg)
+  cout<<"Hash: ";
+  for(auto ch : hashval)
     printf("%02x", ch);
   cout<<endl;
 
-  auto demsg = cg.dec("password", enmsg);
-  cout<<"Message: " <<demsg<<endl;
+  auto enmsgv = cg.enc(passwordv, msgv);
+
+  cout<<"Cipher: ";
+  for(auto ch : enmsgv)
+    printf("%02x", ch);
+  cout<<endl;
+
+  auto demsgv = cg.dec(passwordv, enmsgv);
+  auto demsg = mind::str(demsgv.begin(), demsgv.end());
+  cout<<"Message: "<<demsg<<endl;
 
   return 0;
 }

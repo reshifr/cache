@@ -13,7 +13,7 @@ concept hash_concept = requires(H h) {
     { h(salt) } noexcept;
     { h(salt) } noexcept -> std::same_as<H&>;
   };
-  requires requires(const str& data) {
+  requires requires(const dblk& data) {
     { h.operator()(data) } noexcept -> std::same_as<sblk<L>>;
   };
 };

@@ -24,7 +24,7 @@ template <
 class chacha20poly1305 : public chacha20poly1305_conf {
 public:
   chacha20poly1305(const sblk<SALT_LENGTH>& salt): m_salt(salt) {};
-  dblk enc(const str& sec, const str& msg) {
+  dblk enc(const dblk& sec, const dblk& msg) {
     Rd<IV_LENGTH> ivg;
     Rd<ADD_LENGTH> addg;
     H<KEY_LENGTH, sblk<SALT_LENGTH>> keyg(m_salt);
@@ -37,15 +37,13 @@ public:
     dblk enmsg(msg.size());
 
     en.SetKeyWithIV(key.data(), KEY_LENGTH, iv.data(), IV_LENGTH);
-    en.EncryptAndAuthenticate(
-      enmsg.data(), mac.data(), MAC_LENGTH,
-      iv.data(), IV_LENGTH, add.data(), ADD_LENGTH,
-      reinterpret_cast<const b*>(msg.data()), msg.size());
+    en.EncryptAndAuthenticate(enmsg.data(), mac.data(), MAC_LENGTH,
+      iv.data(), IV_LENGTH, add.data(), ADD_LENGTH, msg.data(), msg.size());
     dblk cipblk = serialize(enmsg, iv, add, mac);
     return cipblk;
   }
 
-  str dec(const str& sec, const dblk &cipblk) {
+  dblk dec(const dblk& sec, const dblk &cipblk) {
     H<KEY_LENGTH, sblk<SALT_LENGTH>> keyg(m_salt);
     CryptoPP::ChaCha20Poly1305::Decryption de;
 
@@ -59,11 +57,9 @@ public:
     dblk demsg(enmsglen);
 
     de.SetKeyWithIV(key.data(), KEY_LENGTH, iv.data(), IV_LENGTH);
-    de.DecryptAndVerify(
-      demsg.data(), mac.data(), MAC_LENGTH, iv.data(),
+    de.DecryptAndVerify(demsg.data(), mac.data(), MAC_LENGTH, iv.data(),
       IV_LENGTH, add.data(), ADD_LENGTH, cipblk.data()+metalen, enmsglen);
-    str msg(demsg.begin(), demsg.end());
-    return msg;
+    return demsg;
   }
 
 private:
