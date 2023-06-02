@@ -15,8 +15,9 @@ namespace mind {
  */
 template <class blk>
 concept is_blk =
-  std::is_same_v<blk, dblk> ||
-  std::is_same_v<blk, sblk<std::tuple_size_v<blk>>>;
+  std::is_same_v<std::remove_cv_t<blk>, dblk> ||
+  std::is_same_v<std::remove_cv_t<blk>,
+    sblk<std::tuple_size_v<std::remove_cv_t<blk>>>>;
 
 } // namespace mind
 
