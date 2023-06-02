@@ -9,7 +9,7 @@ namespace mind {
 /**
  * \brief OS random number generator error
  */
-class osrand_error : exception {
+class osrand_error : rand_error {
 public:
   static constexpr auto OSRAND_FAILED =
     "Mind Error: OS failed to generate random number.";

@@ -19,7 +19,7 @@ using kdf = mind::hash<L, Slt, mind::scrypt<L, Slt>>;
 int main(void) {
   mind::rand<16> rand;
   mind::rand<16>::blk_t salt = rand();
-  mind::hash<48, decltype(salt)> hg(salt);
+  mind::hash<32, decltype(salt)> hg(salt);
 
   std::string msg = "🤪🤪🤪";
   std::string password = "password";

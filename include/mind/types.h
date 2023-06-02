@@ -33,20 +33,36 @@ using dblk = std::vector<b>;
 template <u L> using sblk = std::array<b, L>;
 
 /**
- * \brief Exception
+ * \brief Error
  */
-class exception : public std::exception {
+class error : public std::exception {
 public:
+  static constexpr auto APP_ERROR =
+    "Mind Error: There is an error.";
   static constexpr auto NOT_IMPLEMENTED =
     "Mind Error: Not implemented codes.";
-  exception(void) = default;
-  exception(const std::string& msg) noexcept: m_msg(msg) {}
-  exception& operator=(const exception&) = default;
-  exception& operator=(exception&&) = default;
-  const char* what(void) const noexcept { return m_msg.c_str(); }
+
+  error(void) noexcept = default;
+  error(error&&) noexcept = default;
+  error(const error&) noexcept = default;
+  error& operator=(error&&) noexcept = default;
+  error& operator=(const error&) noexcept = default;
+  error(const std::string& msg) noexcept: m_msg(msg) {}
+  const char* what(void) const noexcept override
+    { return m_msg.empty() ? APP_ERROR : m_msg.c_str(); }
 
 private:
   std::string m_msg;
+};
+
+/**
+ * \brief Random number generator error
+ */
+class rand_error : public error {
+public:
+  static constexpr auto RAND_FAILED =
+    "Mind Error: Failed to generate random number.";
+  const char* what(void) const noexcept override { return RAND_FAILED; }
 };
 
 } // namespace mind

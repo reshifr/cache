@@ -10,7 +10,7 @@ namespace mind {
 /**
  * \brief RDRAND random number generator error
  */
-class rdrand_error : exception {
+class rdrand_error : rand_error {
 public:
   static constexpr auto RDRAND_FAILED =
     "Mind Error: RDRAND instruction failed to generate random number.";

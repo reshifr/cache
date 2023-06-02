@@ -18,7 +18,7 @@ namespace mind {
  * - `SALT_LENGTH` (Salt Length) = 16 bytes
  * \note The salt length is not part of the algorithm configuration.
  */
-class xchacha20poly1305_conf {
+class xchacha20poly1305_config {
 public:
   static constexpr auto IV_LENGTH = 24;
   static constexpr auto ADD_LENGTH = 12;
@@ -35,7 +35,7 @@ public:
 template <
   template <u L, class Slt> class H,
   template <u L> class Rd=rand>
-class xchacha20poly1305 : public xchacha20poly1305_conf {
+class xchacha20poly1305 : public xchacha20poly1305_config {
 public:
   using blk_t = dblk;
   using slt_t = sblk<SALT_LENGTH>;
@@ -44,15 +44,16 @@ public:
    * \brief Initializes the cipher with a salt
    * \param salt The salt
    */
-  xchacha20poly1305(const slt_t& salt): m_salt(salt) {};
+  xchacha20poly1305(const slt_t& salt) noexcept: m_salt(salt) {};
 
   /**
    * \brief Encrypts a message with a secret
    * \param sec The secret
    * \param msg The message
    * \return The ciphertext
+   * \throws rand_error If the random number generator fails
    */
-  blk_t enc(const blk_t& sec, const blk_t& msg) {
+  blk_t enc(const blk_t& sec, const blk_t& msg) const {
     Rd<IV_LENGTH> ivg;
     Rd<ADD_LENGTH> addg;
     H<KEY_LENGTH, slt_t> keyg(m_salt);
@@ -77,7 +78,7 @@ public:
    * \param cpblk The ciphertext
    * \return The message
    */
-  blk_t dec(const blk_t& sec, const blk_t &cpblk) {
+  blk_t dec(const blk_t& sec, const blk_t &cpblk) const noexcept {
     H<KEY_LENGTH, slt_t> keyg(m_salt);
     CryptoPP::XChaCha20Poly1305::Decryption de;
 
@@ -112,7 +113,7 @@ private:
     const sblk<IV_LENGTH>& iv,
     const sblk<ADD_LENGTH>& add,
     const sblk<MAC_LENGTH>& mac
-  ) {
+  ) const noexcept {
     blk_t cpblk;
     cpblk.insert(cpblk.end(), iv.begin(), iv.end());
     cpblk.insert(cpblk.end(), add.begin(), add.end());
@@ -133,7 +134,7 @@ private:
     sblk<IV_LENGTH>& iv,
     sblk<ADD_LENGTH>& add,
     sblk<MAC_LENGTH>& mac
-  ) {
+  ) const noexcept {
     auto ivi = cpblk.begin();
     std::copy_n(ivi, IV_LENGTH, iv.begin());    
     auto addi = ivi+IV_LENGTH;

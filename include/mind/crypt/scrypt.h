@@ -16,7 +16,7 @@ namespace mind {
  * - `R` (Blockmix) = 24
  * - `N` (Cost) = 8192
  */
-class scrypt_conf {
+class scrypt_config {
 public:
   static constexpr auto P = 1U;
   static constexpr auto R = 24U;
@@ -30,7 +30,7 @@ public:
  * \note `L` must be greater than 0.
  */
 template <u L, class Slt>
-class scrypt : public scrypt_conf {
+class scrypt : public scrypt_config {
 public:
   using blk_t = sblk<L>;
   using slt_t = Slt;
