@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.24.2)
 project(Mind)
 
 # C++ Configuration
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS_DEBUG -Og)
 set(CMAKE_CXX_FLAGS_RELEASE -O3)
 cmake_host_system_information(

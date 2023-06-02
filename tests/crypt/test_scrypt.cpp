@@ -1,11 +1,11 @@
-#include <string>
+#include <string_view>
 #include "gtest/gtest.h"
 #include "mind/crypt/scrypt.h"
 
 TEST(test_scrypt, scrypt) {
   // Inputs
   constexpr mind::u size = 16;
-  std::string data = "The Fox and the Grapes";
+  constexpr std::string_view data = "The Fox and the Grapes";
   auto datav = mind::dblk(data.begin(), data.end());
   constexpr mind::sblk<size> salt = {
     0xe3, 0xe8, 0x62, 0xe5, 0x77, 0xbc, 0xc1, 0x28,
@@ -14,7 +14,7 @@ TEST(test_scrypt, scrypt) {
 
   // Expectations
   constexpr mind::u exp_size = size;
-  mind::sblk<exp_size> exp_hv = {
+  constexpr mind::sblk<exp_size> exp_hv = {
     0xe3, 0x36, 0xdd, 0x66, 0xaf, 0x91, 0xdb, 0x14,
     0x99, 0xc9, 0x6a, 0x74, 0xf6, 0x9d, 0x58, 0x5f
   };

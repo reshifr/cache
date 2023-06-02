@@ -22,18 +22,17 @@ public:
  * \note `L` must be greater than 0.
  */
 template <u L>
-requires(L>0)
 class osrand {
 public:
-  using blk = sblk<L>;
+  using blk_t = sblk<L>;
 
   /**
    * \brief Generate secure random block
    * \return A secure random block
    * \throws osrand_error Error in generating random number
    */
-  blk operator()(void) const {
-    blk rn;
+  blk_t operator()(void) const {
+    blk_t rn;
     try {
       CryptoPP::AutoSeededRandomPool rng;
       rng.GenerateBlock(rn.data(), L);

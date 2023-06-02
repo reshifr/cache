@@ -7,7 +7,7 @@ TEST(test_rdrand, rdrand) {
 
   // Expectations
   constexpr mind::u exp_size = size;
-  mind::sblk<exp_size> exp_rn;
+  mind::rdrand<size>::blk_t exp_rn;
 
   // Providing inputs
   mind::rdrand<size> rng;

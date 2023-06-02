@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 #include "mind/types.h"
-#include "mind/traits.h"
 #include "mind/crypt/hash.h"
 #include "mind/crypt/rand.h"
 #include "mind/crypt/osrand.h"
@@ -19,7 +18,7 @@ using kdf = mind::hash<L, Slt, mind::scrypt<L, Slt>>;
 
 int main(void) {
   mind::rand<16> rand;
-  decltype(rand)::blk salt = rand();
+  mind::rand<16>::blk_t salt = rand();
   mind::hash<48, decltype(salt)> hg(salt);
 
   std::string msg = "🤪🤪🤪";
