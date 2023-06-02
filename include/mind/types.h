@@ -5,14 +5,10 @@
 #include <string>
 #include <vector>
 #include <cstdint>
-#include <utility>
 #include <exception>
 
 namespace mind {
 
-/**
- * \brief Integer types
- */
 using b = std::uint8_t;
 using i = std::int32_t;
 using u = std::uint32_t;
@@ -24,11 +20,6 @@ using i32 = std::int32_t;
 using u32 = std::uint32_t;
 using i64 = std::int64_t;
 using u64 = std::uint64_t;
-
-/**
- * \brief String
- */
-using str = std::string;
 
 /**
  * \brief Dynamic block of bytes
@@ -49,14 +40,13 @@ public:
   static constexpr auto NOT_IMPLEMENTED =
     "Mind Error: Not implemented codes.";
   exception(void) = default;
-  exception(const str& msg) noexcept: m_msg(msg) {}
-  exception(str&& msg) noexcept: m_msg(std::forward<str>(msg)) {}
-  exception& operator=(exception&&) = default;
+  exception(const std::string& msg) noexcept: m_msg(msg) {}
   exception& operator=(const exception&) = default;
+  exception& operator=(exception&&) = default;
   const char* what(void) const noexcept { return m_msg.c_str(); }
 
 private:
-  str m_msg;
+  std::string m_msg;
 };
 
 } // namespace mind

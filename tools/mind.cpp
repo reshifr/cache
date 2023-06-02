@@ -1,6 +1,8 @@
+#include <array>
+#include <string>
 #include <iostream>
-
 #include "mind/types.h"
+#include "mind/traits.h"
 #include "mind/crypt/hash.h"
 #include "mind/crypt/rand.h"
 #include "mind/crypt/osrand.h"
@@ -13,20 +15,20 @@
 using namespace std;
 
 template <mind::u L, class Slt>
-using fdk = mind::hash<L, Slt, mind::scrypt<L, Slt>>;
+using kdf = mind::hash<L, Slt, mind::scrypt<L, Slt>>;
 
 int main(void) {
   mind::rand<16> rand;
-  mind::sblk<16> salt = rand();
-  mind::hash<32, mind::sblk<16>> hg(salt);
+  decltype(rand)::blk salt = rand();
+  mind::hash<48, decltype(salt)> hg(salt);
 
-  mind::str msg = "🤪🤪🤪";
-  mind::str password = "password";
+  std::string msg = "🤪🤪🤪";
+  std::string password = "password";
   auto msgv = mind::dblk(msg.begin(), msg.end());
   auto passwordv = mind::dblk(password.begin(), password.end());
 
-  mind::sblk<32> hashval = hg(msgv);
-  mind::cipher<fdk, mind::rdrand> cg(salt);
+  auto hashval = hg(msgv);
+  mind::cipher<kdf, mind::rdrand> cg(salt);
 
   cout<<"Hash: ";
   for(auto ch : hashval)
@@ -41,7 +43,7 @@ int main(void) {
   cout<<endl;
 
   auto demsgv = cg.dec(passwordv, enmsgv);
-  auto demsg = mind::str(demsgv.begin(), demsgv.end());
+  auto demsg = std::string(demsgv.begin(), demsgv.end());
   cout<<"Message: "<<demsg<<endl;
 
   return 0;

@@ -23,17 +23,21 @@ public:
 /**
  * \brief RDRAND random number generator
  * \tparam L Block length in bytes
+ * \note `L` must be greater than 0.
  */
 template <u L>
+requires(L>0)
 class rdrand {
 public:
+  using blk = sblk<L>;
+
   /**
    * \brief Generate secure random block
-   * \return sblk<L> Secure random block
+   * \return A secure random block
    * \throws rdrand_error Error in generating random number
    */
-  sblk<L> operator()(void) const {
-    sblk<L> rn;
+  blk operator()(void) const {
+    blk rn;
     try {
       CryptoPP::RDRAND rng;
       rng.GenerateBlock(rn.data(), L);
