@@ -89,7 +89,7 @@ public:
 };
 
 /**
- * \brief RDRAND random number generator with `L` is 0
+ * \brief RDRAND random number generator with `L` equal to 0
  */
 template <>
 class rdrand<u(0)> : public rdrand_base {};

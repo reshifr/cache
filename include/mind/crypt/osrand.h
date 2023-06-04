@@ -17,31 +17,75 @@ public:
 };
 
 /**
- * \brief OS random number generator
- * \tparam L Block length in bytes
- * \note `L` must be greater than 0.
+ * \brief OS random number generator base class
  */
-template <u L>
-class osrand {
+class osrand_base {
 public:
-  using blk_t = sblk<L>;
-
   /**
-   * \brief Generate secure random block
+   * \brief Generate dynamic secure random block
+   * \param len Block length in bytes
    * \return A secure random block
    * \throws osrand_error Error in generating random number
    */
-  blk_t operator()(void) const {
-    blk_t rn;
+  dblk operator()(u len) {
+    dblk rn(len);
     try {
-      CryptoPP::AutoSeededRandomPool rng;
-      rng.GenerateBlock(rn.data(), L);
+      m_rng.GenerateBlock(rn.data(), len);
+    } catch(...) {
+      throw osrand_error();
+    }
+    return rn;
+  }
+
+  /**
+   * \brief Generate secure random in-place block
+   * \tparam In Input iterator type
+   * \param in Iterator to the beginning of the block
+   * \param len Block length in bytes
+   * \throws osrand_error Error in generating random number
+   */
+  template <typename In>
+  void operator()(In in, u len) {
+    try {
+      m_rng.GenerateBlock(std::addressof(*in), len);
+    } catch(...) {
+      throw osrand_error();
+    }
+  }
+
+protected:
+  CryptoPP::AutoSeededRandomPool m_rng;
+};
+
+/**
+ * \brief OS random number generator with `L` greater than 0
+ * \tparam L Block length in bytes
+ * \note If `L` is 0, then the base class functors are used.
+ */
+template <u L=u(0)>
+class osrand : public osrand_base {
+public:
+  /**
+   * \brief Generate static secure random block
+   * \return A secure random block
+   * \throws osrand_error Error in generating random number
+   */
+   sblk<L> operator()(void) {
+    sblk<L> rn;
+    try {
+      m_rng.GenerateBlock(rn.data(), L);
     } catch(...) {
       throw osrand_error();
     }
     return rn;
   }
 };
+
+/**
+ * \brief OS random number generator with `L` equal to 0
+ */
+template <>
+class osrand<u(0)> : public osrand_base {};
 
 } // namespace mind
 
