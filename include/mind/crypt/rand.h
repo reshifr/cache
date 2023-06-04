@@ -1,7 +1,7 @@
 #ifndef MIND_CRYPT_RAND_H
 #define MIND_CRYPT_RAND_H 1
 
-#include "mind/types.h"
+#include "mind/mind.h"
 #include "mind/crypt/rdrand.h"
 #include "mind/crypt/osrand.h"
 
@@ -23,8 +23,8 @@ template <u L=u(0)>
 class rand : public osrand<L> {};
 template <>
 class rand<u(0)> : public osrand<u(0)> {};
-#endif // MIND_RDRAND_ENABLED
+#endif /* MIND_RDRAND_ENABLED */
 
-} // namespace mind
+} /* namespace mind */
 
-#endif // MIND_CRYPT_RAND_H
+#endif /* MIND_CRYPT_RAND_H */

@@ -1,7 +1,7 @@
 #ifndef MIND_CRYPT_KDF_H
 #define MIND_CRYPT_KDF_H 1
 
-#include "mind/types.h"
+#include "mind/mind.h"
 #include "mind/crypt/scrypt.h"
 
 namespace mind {
@@ -14,6 +14,6 @@ namespace mind {
 template <u L>
 class kdf : public scrypt<L> {};
 
-} // namespace mind
+} /* namespace mind */
 
-#endif // MIND_CRYPT_KDF_H
+#endif /* MIND_CRYPT_KDF_H */

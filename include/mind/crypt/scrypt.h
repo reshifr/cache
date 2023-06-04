@@ -2,7 +2,7 @@
 #define MIND_CRYPT_SCRYPT_H 1
 
 #include <algorithm>
-#include "mind/types.h"
+#include "mind/mind.h"
 #include "cryptopp/scrypt.h"
 #include "cryptopp/secblock.h"
 #include "cryptopp/cryptlib.h"
@@ -52,6 +52,6 @@ protected:
   CryptoPP::Scrypt m_hg;
 };
 
-} // namespace mind
+} /* namespace mind */
 
-#endif // MIND_CRYPT_SCRYPT_H
+#endif /* MIND_CRYPT_SCRYPT_H */

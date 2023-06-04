@@ -1,7 +1,7 @@
 #ifndef MIND_CRYPT_ISO10126_H
 #define MIND_CRYPT_ISO10126_H
 
-#include "mind/types.h"
+#include "mind/mind.h"
 #include "mind/crypt/rand.h"
 
 namespace mind {
@@ -41,6 +41,6 @@ protected:
   }
 };
 
-}
+} /* namespace mind */
 
-#endif // MIND_CRYPT_ISO10126_H
+#endif /* MIND_CRYPT_ISO10126_H */

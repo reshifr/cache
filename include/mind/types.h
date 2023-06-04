@@ -30,7 +30,8 @@ using dblk = std::vector<b>;
  * \brief Static block of bytes
  * \tparam L Block length in bytes
  */
-template <u L> using sblk = std::array<b, L>;
+template <u L>
+using sblk = std::array<b, L>;
 
 /**
  * \brief Error
@@ -65,6 +66,6 @@ public:
   const char* what(void) const noexcept override { return RAND_FAILED; }
 };
 
-} // namespace mind
+} /* namespace mind */
 
-#endif // MIND_TYPES_H
+#endif /* MIND_TYPES_H */

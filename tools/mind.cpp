@@ -1,17 +1,12 @@
 #include <array>
 #include <string>
 #include <iostream>
-#include "mind/types.h"
+
+#include "mind/mind.h"
 #include "mind/crypt/kdf.h"
-#include "mind/crypt/iso10126.h"
 #include "mind/crypt/pad.h"
 #include "mind/crypt/rand.h"
-#include "mind/crypt/osrand.h"
-#include "mind/crypt/rdrand.h"
-#include "mind/crypt/scrypt.h"
 #include "mind/crypt/cipher.h"
-#include "mind/crypt/chacha20poly1305.h"
-#include "mind/crypt/xchacha20poly1305.h"
 
 using namespace std;
 

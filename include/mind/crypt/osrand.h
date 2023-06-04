@@ -1,7 +1,7 @@
 #ifndef MIND_CRYPT_OSRAND_H
 #define MIND_CRYPT_OSRAND_H 1
 
-#include "mind/types.h"
+#include "mind/mind.h"
 #include "cryptopp/osrng.h"
 
 namespace mind {
@@ -87,6 +87,6 @@ public:
 template <>
 class osrand<u(0)> : public osrand_base {};
 
-} // namespace mind
+} /* namespace mind */
 
-#endif // MIND_CRYPT_OSRAND_H
+#endif /* MIND_CRYPT_OSRAND_H */

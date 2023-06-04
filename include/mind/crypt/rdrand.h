@@ -1,7 +1,7 @@
 #ifndef MIND_CRYPT_RDRAND_H
 #define MIND_CRYPT_RDRAND_H 1
 
-#include "mind/types.h"
+#include "mind/mind.h"
 #include "cryptopp/cpu.h"
 #include "cryptopp/rdrand.h"
 
@@ -94,6 +94,6 @@ public:
 template <>
 class rdrand<u(0)> : public rdrand_base {};
 
-} // namespace mind
+} /* namespace mind */
 
-#endif // MIND_CRYPT_RDRAND_H
+#endif /* MIND_CRYPT_RDRAND_H */
