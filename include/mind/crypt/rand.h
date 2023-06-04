@@ -9,8 +9,7 @@ namespace mind {
 
 /**
  * \brief Abstract random number generator
- * \tparam L Block length in bytes
- * \tparam Rd Random number generator
+ * \tparam L Block length in bytes, the default is 0
  * \note If the RDRAND instruction is available, it is used.
  *       Otherwise, the OS random number generator is used.
  */

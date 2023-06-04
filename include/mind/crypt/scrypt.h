@@ -48,7 +48,7 @@ public:
     return dk;
   }
 
-private:
+protected:
   CryptoPP::Scrypt m_hg;
 };
 

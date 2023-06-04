@@ -9,11 +9,10 @@ namespace mind {
 /**
  * \brief Abstract key derivation function
  * \tparam L Block length in bytes
- * \tparam Kdf Key derivation function
  * \note The default key derivation function is scrypt
  */
-template <u L, class Kdf=scrypt<L>>
-using kdf = Kdf;
+template <u L>
+class kdf : public scrypt<L> {};
 
 } // namespace mind
 
