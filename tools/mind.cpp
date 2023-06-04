@@ -3,6 +3,8 @@
 #include <iostream>
 #include "mind/types.h"
 #include "mind/crypt/kdf.h"
+#include "mind/crypt/iso10126.h"
+#include "mind/crypt/pad.h"
 #include "mind/crypt/rand.h"
 #include "mind/crypt/osrand.h"
 #include "mind/crypt/rdrand.h"
@@ -14,8 +16,8 @@
 using namespace std;
 
 int main(void) {
-  mind::rand<16> rand;
-  mind::sblk<16> salt = rand();
+  mind::rand rand;
+  mind::dblk salt = rand(16);
 
   std::string msg = "🤪🤪🤪";
   std::string password = "password";
@@ -30,7 +32,22 @@ int main(void) {
     printf("%02x", ch);
   cout<<endl;
 
-  // mind::cipher<kdf, mind::rdrand> cg(salt);
+  auto padmsgv = msgv;
+  mind::pad pd;
+
+  pd.add(padmsgv);
+  cout<<"Padded: ";
+  for(auto ch : padmsgv)
+    printf("%.2x", ch);
+  cout<<endl;
+
+  pd.del(padmsgv);
+  cout<<"Unpadded: ";
+  for(auto ch : padmsgv)
+    printf("%c", ch);
+  cout<<endl;
+
+  // mind::cipher<mind::kdf> cg(salt);
   // auto enmsgv = cg.enc(passwordv, msgv);
 
   // cout<<"Cipher: ";
