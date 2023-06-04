@@ -2,11 +2,8 @@
 #define MIND_CRYPT_RAND_H 1
 
 #include "mind/types.h"
+#include "mind/crypt/rdrand.h"
 #include "mind/crypt/osrand.h"
-
-#if defined(MIND_RDRAND_ENABLED)
-# include "mind/crypt/rdrand.h"
-#endif // MIND_RDRAND_ENABLED
 
 namespace mind {
 
@@ -18,11 +15,16 @@ namespace mind {
  *       Otherwise, the OS random number generator is used.
  */
 #if defined(MIND_RDRAND_ENABLED)
-template <u L, class Rd=rdrand<L>>
+template <u L=u(0)>
+class rand : public rdrand<L> {};
+template <>
+class rand<u(0)> : public rdrand<u(0)> {};
 #else
-template <u L, class Rd=osrand<L>>
+template <u L=u(0)>
+class rand : public osrand<L> {};
+template <>
+class rand<u(0)> : public osrand<u(0)> {};
 #endif // MIND_RDRAND_ENABLED
-using rand = Rd;
 
 } // namespace mind
 
