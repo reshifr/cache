@@ -2,6 +2,7 @@
 #include "mind/crypt/scrypt.h"
 
 /**
+ * \brief Type wrapper
  * \note ID 0: len == 0 && empty data && empty salt
  *       ID 1: len == 0 && non-empty data && non-empty salt
  *       ID 2: len == 16 && empty data && empty salt
@@ -75,19 +76,33 @@ template <typename in_type>
 class scrypt_sblk_functor_in_len_salt_test : public testing::Test {};
 TYPED_TEST_SUITE_P(scrypt_sblk_functor_in_len_salt_test);
 
+/**
+ * \brief Test `scrypt<L>::operator()`
+ */
 TYPED_TEST_P(
   scrypt_sblk_functor_in_len_salt_test,
   scrypt_sblk_functor_in_len_salt
 ) {
-  // Inputs
+  /**
+   * \brief Inputs
+   */
   const auto data = TypeParam::data();
   constexpr auto salt = TypeParam::salt();
-  // Expectations
+
+  /**
+   * \brief Expectations
+   */
   constexpr auto exp_hv = TypeParam::exp_hv();
-  // Providing inputs
+
+  /**
+   * \brief Providing inputs
+   */
   mind::scrypt<TypeParam::L> h;
   auto hv = h(data.begin(), data.size(), salt);
-  // Checking outputs
+
+  /**
+   * \brief Checking outputs
+   */
   EXPECT_EQ(exp_hv, hv);
 }
 
@@ -96,7 +111,9 @@ REGISTER_TYPED_TEST_SUITE_P(
   scrypt_sblk_functor_in_len_salt
 );
 
-// Input types
+/**
+ * \brief Input types
+ */
 using scrypt_sblk_functor_in_len_salt_test_types = testing::Types<
   scrypt_sblk_functor_in_len_salt_test_wrapper<0, 0, 0>,
   scrypt_sblk_functor_in_len_salt_test_wrapper<1, 0, 16>,
