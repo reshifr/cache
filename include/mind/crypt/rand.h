@@ -14,8 +14,7 @@ namespace mind {
  * \brief Abstract random number generator
  * \tparam L Block length in bytes
  * \tparam Rd Random number generator
- * \note `L` must be greater than 0.
- *       If the RDRAND instruction is available, it is used.
+ * \note If the RDRAND instruction is available, it is used.
  *       Otherwise, the OS random number generator is used.
  */
 #if defined(MIND_RDRAND_ENABLED)

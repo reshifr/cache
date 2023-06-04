@@ -9,14 +9,14 @@ namespace mind {
 
 /**
  * \brief Abstract cipher
- * \tparam H The hash function used to derive the key from the secret
+ * \tparam Kdf Key derivation function
  * \tparam Rd The random number generator
  * \tparam Cp The cipher
  * \note `L` must be greater than 0.
  */
 template <
-  template <u L, class Slt> class H,
-  template <u L> class Rd=rand, class Cp=xchacha20poly1305<H, Rd>>
+  template <u L, class Slt> class Kdf,
+  template <u L> class Rd=rand, class Cp=xchacha20poly1305<Kdf, Rd>>
 using cipher = Cp;
 
 } // namespace mind

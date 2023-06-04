@@ -20,20 +20,20 @@ namespace mind {
  */
 class xchacha20poly1305_config {
 public:
-  static constexpr auto IV_LENGTH = 24;
-  static constexpr auto ADD_LENGTH = 12;
-  static constexpr auto KEY_LENGTH = 32;
-  static constexpr auto MAC_LENGTH = 16;
-  static constexpr auto SALT_LENGTH = 16;
+  static constexpr u IV_LENGTH = 24U;
+  static constexpr u ADD_LENGTH = 12U;
+  static constexpr u KEY_LENGTH = 32U;
+  static constexpr u MAC_LENGTH = 16U;
+  static constexpr u SALT_LENGTH = 16U;
 };
 
 /**
  * \brief XChaCha20-Poly1305 cipher
- * \tparam H The hash function used to derive the key from the secret
+ * \tparam Kdf The key derivation function
  * \tparam Rd The random number generator
  */
 template <
-  template <u L, class Slt> class H,
+  template <u L, class Slt> class Kdf,
   template <u L> class Rd=rand>
 class xchacha20poly1305 : public xchacha20poly1305_config {
 public:
@@ -56,7 +56,7 @@ public:
   blk_t enc(const blk_t& sec, const blk_t& msg) const {
     Rd<IV_LENGTH> ivg;
     Rd<ADD_LENGTH> addg;
-    H<KEY_LENGTH, slt_t> keyg(m_salt);
+    Kdf<KEY_LENGTH, slt_t> keyg(m_salt);
     CryptoPP::XChaCha20Poly1305::Encryption en;
 
     sblk<IV_LENGTH> iv = ivg();
@@ -79,7 +79,7 @@ public:
    * \return The message
    */
   blk_t dec(const blk_t& sec, const blk_t &cpblk) const noexcept {
-    H<KEY_LENGTH, slt_t> keyg(m_salt);
+    Kdf<KEY_LENGTH, slt_t> keyg(m_salt);
     CryptoPP::XChaCha20Poly1305::Decryption de;
 
     sblk<IV_LENGTH> iv;

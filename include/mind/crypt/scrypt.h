@@ -18,48 +18,38 @@ namespace mind {
  */
 class scrypt_config {
 public:
-  static constexpr auto P = 1U;
-  static constexpr auto R = 24U;
-  static constexpr auto N = 8192U;
+  static constexpr u P = 1U;
+  static constexpr u R = 24U;
+  static constexpr u N = 8192U;
 };
 
 /**
  * \brief Scrypt hash function
- * \tparam L The length of the hash
- * \tparam Slt The type of the salt
- * \note `L` must be greater than 0.
+ * \tparam L The length of the hash value in bytes
  */
-template <u L, class Slt>
+template <u L>
 class scrypt : public scrypt_config {
 public:
-  using blk_t = sblk<L>;
-  using slt_t = Slt;
-
-  /**
-   * \brief Initialize the object with a salt
-   * \param salt The salt
-   */
-  scrypt(const slt_t& salt) noexcept: m_salt(salt) {}
-
   /**
    * \brief Compute the hash of a data block
-   * \param data The data block
-   * \tparam Blk The type of the data block
-   * \return The hash of the data block
+   * \tparam In The type of the input iterator
+   * \tparam Sl The type of the salt
+   * \param in The input iterator
+   * \param len The length of the input data block
+   * \param salt The salt
+   * \return The hash value
    */
-  template <class Blk>
-  blk_t operator()(const Blk& data) noexcept {
-    CryptoPP::SecByteBlock dk(L);
-    CryptoPP::Scrypt hg;
-    hg.DeriveKey(dk, L, data.data(),
-      data.size(), m_salt.data(), m_salt.size(), N, R, P);
-    blk_t hv;
-    std::copy_n(dk.begin(), L, hv.begin());
-    return hv;
+  template <typename In, class Sl>
+  sblk<L> operator()(const In in,
+    u len, const Sl& salt) noexcept {
+    sblk<L> dk;
+    m_hg.DeriveKey(dk.data(), L,
+      std::addressof(*in), len, salt.data(), salt.size(), N, R, P);
+    return dk;
   }
 
 private:
-  slt_t m_salt;
+  CryptoPP::Scrypt m_hg;
 };
 
 } // namespace mind
