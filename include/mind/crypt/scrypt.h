@@ -4,7 +4,6 @@
 #include <algorithm>
 #include "mind/mind.h"
 #include "cryptopp/scrypt.h"
-#include "cryptopp/secblock.h"
 #include "cryptopp/cryptlib.h"
 
 namespace mind {
@@ -18,9 +17,9 @@ namespace mind {
  */
 class scrypt_config {
 public:
-  static constexpr u P = 1U;
-  static constexpr u R = 24U;
-  static constexpr u N = 8192U;
+  static constexpr auto P = u(1);
+  static constexpr auto R = u(24);
+  static constexpr auto N = u(8192);
 };
 
 /**
