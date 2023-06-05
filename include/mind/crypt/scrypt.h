@@ -9,11 +9,11 @@
 namespace mind {
 
 /**
- * \brief Scrypt configuration
+ * \brief Scrypt hash function configuration
  * Configuration parameters for the scrypt algorithm are:
- * - `P` (Parallelization) = 1
- * - `R` (Blockmix) = 24
- * - `N` (Cost) = 8192
+ * - `P` (parallelization) = 1
+ * - `R` (blockmix) = 24
+ * - `N` (cost) = 8192
  */
 class scrypt_config {
 public:

@@ -1,7 +1,6 @@
 #include <array>
 #include <string>
 #include <iostream>
-
 #include "mind/mind.h"
 #include "mind/crypt/kdf.h"
 #include "mind/crypt/pad.h"
@@ -28,15 +27,15 @@ int main(void) {
   cout<<endl;
 
   auto padmsgv = msgv;
-  mind::pad pd;
+  mind::pad pdr;
 
-  pd.add(padmsgv);
+  pdr.add(padmsgv);
   cout<<"Padded: ";
   for(auto ch : padmsgv)
     printf("%.2x", ch);
   cout<<endl;
 
-  pd.del(padmsgv);
+  pdr.del(padmsgv);
   cout<<"Unpadded: ";
   for(auto ch : padmsgv)
     printf("%c", ch);
