@@ -16,13 +16,9 @@ namespace mind {
 #if defined(MIND_RDRAND_ENABLED)
 template <u L=u(0)>
 class rand : public rdrand<L> {};
-template <>
-class rand<u(0)> : public rdrand<u(0)> {};
 #else
 template <u L=u(0)>
 class rand : public osrand<L> {};
-template <>
-class rand<u(0)> : public osrand<u(0)> {};
 #endif /* MIND_RDRAND_ENABLED */
 
 } /* namespace mind */
