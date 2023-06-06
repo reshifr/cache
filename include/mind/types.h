@@ -56,16 +56,6 @@ private:
   std::string m_msg;
 };
 
-/**
- * \brief Random number generator error
- */
-class rand_error : public error {
-public:
-  static constexpr auto RAND_FAILED =
-    "Mind Error: Failed to generate random number.";
-  const char* what(void) const noexcept override { return RAND_FAILED; }
-};
-
 } /* namespace mind */
 
 #endif /* MIND_TYPES_H */
