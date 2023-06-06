@@ -9,8 +9,8 @@
 namespace mind {
 
 /**
- * \brief Scrypt hash function configuration
- * Configuration parameters for the scrypt algorithm are:
+ * \brief Scrypt key derivation function configuration
+ * Configuration parameters for the scrypt are:
  * - `P` (parallelization) = 1
  * - `R` (blockmix) = 24
  * - `N` (cost) = 8192
@@ -23,32 +23,33 @@ public:
 };
 
 /**
- * \brief Scrypt hash function
- * \tparam L The length of the hash value in bytes
+ * \brief Scrypt key derivation function
+ * \tparam L The length of the derived key in bytes
+ * \tparam Kdg The key derivation generator dependency
  */
-template <u L>
+template <u L, class Kdg=CryptoPP::Scrypt>
 class scrypt : public scrypt_config {
 public:
   /**
-   * \brief Compute the hash of a data block
+   * \brief Compute the derived key
    * \tparam In The type of the input iterator
    * \tparam Sl The type of the salt
    * \param in The input iterator
    * \param len The length of the input data block
    * \param salt The salt
-   * \return The hash value
+   * \return The derived key
    */
   template <typename In, class Sl>
   sblk<L> operator()(const In in,
     u len, const Sl& salt) noexcept {
     sblk<L> dk;
-    m_hg.DeriveKey(dk.data(), L,
+    m_kdg.DeriveKey(dk.data(), L,
       std::addressof(*in), len, salt.data(), salt.size(), N, R, P);
     return dk;
   }
 
 protected:
-  CryptoPP::Scrypt m_hg;
+  Kdg m_kdg;
 };
 
 } /* namespace mind */
