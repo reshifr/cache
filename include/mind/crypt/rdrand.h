@@ -4,13 +4,14 @@
 #include "mind/mind.h"
 #include "cryptopp/cpu.h"
 #include "cryptopp/rdrand.h"
+#include "mind/crypt/rand_types.h"
 
 namespace mind {
 
 /**
  * \brief RDRAND random number generator error
  */
-class rdrand_error : rand_error {
+class rdrand_error : public rand_error {
 public:
   static constexpr auto RDRAND_FAILED =
     "Mind Error: RDRAND instruction failed to generate random number.";
@@ -22,7 +23,9 @@ public:
 
 /**
  * \brief RDRAND random number generator base class
+ * \tparam Rng Random number generator dependency
  */
+template <class Rng>
 class rdrand_base {
 public:
   /**
@@ -60,16 +63,17 @@ public:
   }
 
 protected:
-  CryptoPP::RDRAND m_rng;
+  Rng m_rng;
 };
 
 /**
  * \brief RDRAND random number generator with `L` greater than 0
  * \tparam L Block length in bytes
+ * \tparam Rng Random number generator dependency
  * \note If `L` is 0, then the base class functors are used.
  */
-template <u L=u(0)>
-class rdrand : public rdrand_base {
+template <u L=u(0), class Rng=CryptoPP::RDRAND>
+class rdrand : public rdrand_base<Rng> {
 public:
   /**
    * \brief Generate static secure random block
@@ -80,7 +84,7 @@ public:
    sblk<L> operator()(void) {
     sblk<L> rn;
     try {
-      m_rng.GenerateBlock(rn.data(), L);
+      this->m_rng.GenerateBlock(rn.data(), L);
     } catch(...) {
       throw rdrand_error();
     }
@@ -91,8 +95,8 @@ public:
 /**
  * \brief RDRAND random number generator with `L` equal to 0
  */
-template <>
-class rdrand<u(0)> : public rdrand_base {};
+template <class Rng>
+class rdrand<u(0), Rng> : public rdrand_base<Rng> {};
 
 } /* namespace mind */
 

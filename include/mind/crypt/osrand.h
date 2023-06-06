@@ -3,13 +3,14 @@
 
 #include "mind/mind.h"
 #include "cryptopp/osrng.h"
+#include "mind/crypt/rand_types.h"
 
 namespace mind {
 
 /**
  * \brief OS random number generator error
  */
-class osrand_error : rand_error {
+class osrand_error : public rand_error {
 public:
   static constexpr auto OSRAND_FAILED =
     "Mind Error: OS failed to generate random number.";
@@ -18,7 +19,9 @@ public:
 
 /**
  * \brief OS random number generator base class
+ * \tparam Rng Random number generator dependency
  */
+template <class Rng>
 class osrand_base {
 public:
   /**
@@ -54,16 +57,17 @@ public:
   }
 
 protected:
-  CryptoPP::AutoSeededRandomPool m_rng;
+  Rng m_rng;
 };
 
 /**
  * \brief OS random number generator with `L` greater than 0
  * \tparam L Block length in bytes
+ * \tparam Rng Random number generator dependency
  * \note If `L` is 0, then the base class functors are used.
  */
-template <u L=u(0)>
-class osrand : public osrand_base {
+template <u L=u(0), class Rng=CryptoPP::AutoSeededRandomPool>
+class osrand : public osrand_base<Rng> {
 public:
   /**
    * \brief Generate static secure random block
@@ -73,7 +77,7 @@ public:
    sblk<L> operator()(void) {
     sblk<L> rn;
     try {
-      m_rng.GenerateBlock(rn.data(), L);
+      this->m_rng.GenerateBlock(rn.data(), L);
     } catch(...) {
       throw osrand_error();
     }
@@ -84,8 +88,8 @@ public:
 /**
  * \brief OS random number generator with `L` equal to 0
  */
-template <>
-class osrand<u(0)> : public osrand_base {};
+template <class Rng>
+class osrand<u(0), Rng> : public osrand_base<Rng> {};
 
 } /* namespace mind */
 
