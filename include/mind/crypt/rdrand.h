@@ -29,6 +29,14 @@ template <class Rng>
 class rdrand_base {
 public:
   /**
+   * \brief Default constructor
+   * \throws rdrand_error Error in generating random number
+   * \throws rdrand_error RDRAND instruction is not supported
+   */
+  rdrand_base() try {} catch(...)
+    { throw rdrand_error(); }
+
+  /**
    * \brief Generate dynamic secure random block
    * \param len Block length in bytes
    * \return A secure random block
